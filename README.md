@@ -1,6 +1,6 @@
 # Eleks.Internship.VladimirEdelmann
 Practical task of Volodymyr Hotsanyuk for Eleks Internship (November 2017)
-## Student Info
+## Volodymyr Hotsanyuk
 * Name: Volodymyr Hotsanyuk
 * University: КЕП ІФНТУНГ
 * Course: 4
