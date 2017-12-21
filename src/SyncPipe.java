@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SyncPipe {
     private JFrame frmGui;
@@ -61,6 +63,38 @@ public class SyncPipe {
                 + "\n З'єднання: " + str);
         textArea.setEditable(false);
         frmGui.getContentPane().add(textArea);
+        toFile();
+    }
+
+    public void toFile()
+    {
+        try(FileWriter writer = new FileWriter("C:\\Users\\User\\SystemAnalizer\\log.txt", false))
+        {
+            SimpleDateFormat dateFormat = null;
+            dateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
+            String textData = dateFormat.format(new Date());
+
+            String str = "";
+            str = isInternetReachable() ? "Підключено." : "Відключено.";
+
+            String text_to_file = textData + " З'єднання: " + str;
+            writer.write(text_to_file);
+            text_to_file = "";
+
+            String command = "fsutil volume diskfree " + discName;
+            String output = executeCommand(command);
+            String memory = output.replaceAll("[^0-9\n]", "");
+            String[] result = memory.split("\n");
+
+            text_to_file = "\nК-ть вільних байтів: " + result[0];
+            writer.write(text_to_file);
+
+            writer.flush();
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
     }
 
     //checks for connection to the internet through dummy request
