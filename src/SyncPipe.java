@@ -49,16 +49,15 @@ public class SyncPipe {
 
         JTextArea textArea = new JTextArea();
         textArea.setBounds(2,30, 250, 48);
-        String command = "fsutil volume diskfree " + discName;
-        String output = executeCommand(command);
-        String memory = output.replaceAll("[^0-9\n]", "");
-        String[] result = memory.split("\n");
+
         String str = new String();
         if(isInternetReachable())
         {
             str = "Підключено.";
         }
         else { str = "Відключено."; }
+
+        String result[] = getFreeSpaceCMD();
         textArea.setText(" Загальна к-ть байтів: " + result[1] + "\n К-ть вільних байтів: " + result[0]
                 + "\n З'єднання: " + str);
         textArea.setEditable(false);
@@ -66,9 +65,23 @@ public class SyncPipe {
         toFile();
     }
 
+    //varname[0] - free bytes
+    //varname[1] - total bytes
+    //varname[2] - avail free bytes
+    public String[] getFreeSpaceCMD()
+    {
+        String command = "fsutil volume diskfree " + discName;
+        String output = executeCommand(command);
+        String memory = output.replaceAll("[^0-9\n]", "");
+        String[] result = memory.split("\n");
+
+        return result;
+    }
+
     public void toFile()
     {
-        try(FileWriter writer = new FileWriter("C:\\Users\\User\\SystemAnalizer\\log.txt", false))
+        String path = "C:\\Users\\User\\SystemAnalizer\\log.txt";
+        try(FileWriter writer = new FileWriter(path, true))
         {
             SimpleDateFormat dateFormat = null;
             dateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
@@ -77,17 +90,14 @@ public class SyncPipe {
             String str = "";
             str = isInternetReachable() ? "Підключено." : "Відключено.";
 
-            String text_to_file = textData + " З'єднання: " + str;
-            writer.write(text_to_file);
+            String text_to_file = textData + " З'єднання: " + str + "\n";
+            writer.append(text_to_file);
+
             text_to_file = "";
 
-            String command = "fsutil volume diskfree " + discName;
-            String output = executeCommand(command);
-            String memory = output.replaceAll("[^0-9\n]", "");
-            String[] result = memory.split("\n");
-
-            text_to_file = "\nК-ть вільних байтів: " + result[0];
-            writer.write(text_to_file);
+            String result[] = getFreeSpaceCMD();
+            text_to_file = "К-ть вільних байтів: " + result[0] + "\n";
+            writer.append(text_to_file);
 
             writer.flush();
         }
@@ -106,10 +116,10 @@ public class SyncPipe {
 
             //open a connection to that source
             HttpURLConnection urlConnect = (HttpURLConnection)url.openConnection();
-            //System.out.println("HttpURLConnection: " + urlConnect.getContent());
+            urlConnect.getContent();
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
         catch (IOException e) {
