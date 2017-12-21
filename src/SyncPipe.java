@@ -9,7 +9,6 @@ import java.util.Date;
 
 public class SyncPipe {
     private JFrame frmGui;
-    //public JTextArea jTextArea;
     public String discName = "C:";
 
     public static void main(String[] args) {
@@ -51,11 +50,7 @@ public class SyncPipe {
         textArea.setBounds(2,30, 250, 48);
 
         String str = new String();
-        if(isInternetReachable())
-        {
-            str = "Підключено.";
-        }
-        else { str = "Відключено."; }
+        str = isInternetReachable() ? "Підключено." : "Відключено.";
 
         String result[] = getFreeSpaceCMD();
         textArea.setText(" Загальна к-ть байтів: " + result[1] + "\n К-ть вільних байтів: " + result[0]
@@ -78,6 +73,9 @@ public class SyncPipe {
         return result;
     }
 
+    //Do changes in log.txt file
+    //Input reachability connection
+    //And changes in free memory
     public void toFile()
     {
         String path = "C:\\Users\\User\\SystemAnalizer\\log.txt";
