@@ -10,6 +10,7 @@ import java.util.Date;
 public class SyncPipe {
     private JFrame frmGui;
     public String discName = "C:";
+    public static String line = "";
 
     public static void main(String[] args) {
 
@@ -60,6 +61,23 @@ public class SyncPipe {
         toFile();
     }
 
+    public boolean isFileEmpty(String path) throws IOException {
+        File file = new File(path);
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line;
+        while ((line = br.readLine()) != null) { }
+        if(line == "") { return true; }
+        else return false;
+    }
+
     //varname[0] - free bytes
     //varname[1] - total bytes
     //varname[2] - avail free bytes
@@ -94,8 +112,34 @@ public class SyncPipe {
             text_to_file = "";
 
             String result[] = getFreeSpaceCMD();
-            text_to_file = "К-ть вільних байтів: " + result[0] + "\n";
-            writer.append(text_to_file);
+            if(isFileEmpty(path))
+            {
+                text_to_file = "К-ть вільних байтів: " + result[0] + "\n";
+                writer.append(text_to_file);
+            }
+            else {
+                try {
+                    File file = new File(path);
+                    BufferedReader fin = new BufferedReader(new FileReader(file));
+
+                    StringBuffer fstr = new StringBuffer();
+                    while ((line = fin.readLine()) != null)
+                    {
+                        fstr.append(line);
+                    }
+                    String output = fstr.toString();
+                    String formatOtput = output.replace("[\\d\\s\\w\n]","");
+                    String[] splitString = formatOtput.split("\n");
+                    //String getLastString = splitString[splitString.length];
+                    //System.out.println("splitString[splitString.length: " + splitString[splitString.length]);
+                    //System.out.println("getLastString: " + getLastString);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
+            }
 
             writer.flush();
         }
