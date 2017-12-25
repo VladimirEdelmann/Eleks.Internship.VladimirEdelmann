@@ -128,14 +128,10 @@ public class SyncPipe {
                     String output = fstr.toString();
                     int lastIndex = output.lastIndexOf(":");
                     String partString = output.substring(lastIndex + 2);
-                    //String getLastString = splitString[splitString.length];
-                    //System.out.println("splitString[splitString.length: " + splitString[splitString.length]);
-                    //System.out.println("getLastString: " + getLastString);
 
                     text_to_file = textData + " З'єднання: " + str + "\n";
                     writer.append(text_to_file);
 
-                    //System.out.println("Кусок дерьма: " + partString);
                     text_to_file = "Вільне місце змінилось з " + partString + " до: " + result[0] + "\n";
                     writer.append(text_to_file);
                 } catch (UnsupportedEncodingException e) {
