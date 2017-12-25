@@ -63,19 +63,18 @@ public class SyncPipe {
 
     public boolean isFileEmpty(String path) throws IOException {
         File file = new File(path);
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        StringBuffer sf = new StringBuffer();
+
+        String line = "";
+        while ((line = br.readLine()) != null)
+        {
+            sf.append(line);
         }
-        String line;
-        while ((line = br.readLine()) != null) { }
-        if(line == "") { return true; }
+        sf.toString();
+        if(sf.equals("")) { return true; }
         else return false;
+
     }
 
     //varname[0] - free bytes
@@ -105,15 +104,14 @@ public class SyncPipe {
 
             String str = "";
             str = isInternetReachable() ? "Підключено." : "Відключено.";
-
-            String text_to_file = textData + " З'єднання: " + str + "\n";
-            writer.append(text_to_file);
-
-            text_to_file = "";
+            String text_to_file = null;
 
             String result[] = getFreeSpaceCMD();
             if(isFileEmpty(path))
             {
+                text_to_file = textData + " З'єднання: " + str + "\n";
+                writer.append(text_to_file);
+                text_to_file = "";
                 text_to_file = "К-ть вільних байтів: " + result[0] + "\n";
                 writer.append(text_to_file);
             }
@@ -128,11 +126,18 @@ public class SyncPipe {
                         fstr.append(line);
                     }
                     String output = fstr.toString();
-                    String formatOtput = output.replace("[\\d\\s\\w\n]","");
-                    String[] splitString = formatOtput.split("\n");
+                    int lastIndex = output.lastIndexOf(":");
+                    String partString = output.substring(lastIndex + 2);
                     //String getLastString = splitString[splitString.length];
                     //System.out.println("splitString[splitString.length: " + splitString[splitString.length]);
                     //System.out.println("getLastString: " + getLastString);
+
+                    text_to_file = textData + " З'єднання: " + str + "\n";
+                    writer.append(text_to_file);
+
+                    //System.out.println("Кусок дерьма: " + partString);
+                    text_to_file = "Вільне місце змінилось з " + partString + " до: " + result[0] + "\n";
+                    writer.append(text_to_file);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (NullPointerException e){
